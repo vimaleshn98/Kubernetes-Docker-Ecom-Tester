@@ -35,7 +35,8 @@ const Registration = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post("http://localhost:8080/ecom/customers", form);
+      const apiUrl = process.env.REACT_APP_API_URL
+      const response = await axios.post(`http://${apiUrl}/ecom/customers`, form);
       
       if (response.status === 200) {
         alert("Your registration was successful");

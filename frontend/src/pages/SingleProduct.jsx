@@ -9,10 +9,10 @@ const SingleProduct = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState({});
   const userid = localStorage.getItem("userid");
-
+  const apiUrl = process.env.REACT_APP_API_URL
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8080/ecom/products/${productId}`)
+      .get(`http://${apiUrl}/ecom/products/${productId}`)
       .then((response) => {
         setProduct(response.data);
       })

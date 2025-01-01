@@ -20,10 +20,11 @@ const OrderDetails = () => {
   const handleProfileSection = (userid) => {
     navigate(`/user/profile/${userid}`);
   };
+  const apiUrl = process.env.REACT_APP_API_URL
  
   const handeldeleteOrder = (orderId) => {
     axios
-      .delete(`http://127.0.0.1:8080/ecom/orders/users/${userId}/${orderId}`)
+      .delete(`http://${apiUrl}/ecom/orders/users/${userId}/${orderId}`)
       .then((response) => {
         alert(response.data);
 

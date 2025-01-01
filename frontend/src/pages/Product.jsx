@@ -36,10 +36,10 @@ const Product = () => {
 
     setFilteredProducts(filteredProducts);
   };
-
+const apiUrl = process.env.REACT_APP_API_URL
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8080/ecom/products/all")
+      .get(`http://${apiUrl}/ecom/products/all`)
       .then((response) => {
         setProducts(response.data);
         filterProducts(selectedCategory, priceOrder, nameSearch, response.data);

@@ -37,10 +37,11 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
+    const apiUrl = process.env.REACT_APP_API_URL
     try {
       const authHeader = `Basic ${btoa(`${form.username}:${form.password}`)}`;
-      const response = await axios.get("http://localhost:8080/ecom/signIn", {
+      console.log(`http://${apiUrl}/ecom`);
+      const response = await axios.get(`http://${apiUrl}/ecom/signIn`, {
         headers: {
           Authorization: authHeader,
         },
