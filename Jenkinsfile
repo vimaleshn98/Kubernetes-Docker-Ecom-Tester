@@ -32,6 +32,7 @@ pipeline {
             }
 
         stage("Parallel validation for E-com projects"){
+            parallel{
                 stage("validation eCommersApp maven project"){
                     agent {
                         docker {
@@ -81,6 +82,7 @@ pipeline {
                     }
                 }
             }
+        }
     }
 
 }
