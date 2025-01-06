@@ -1,0 +1,26 @@
+---
+- name: Install OpenJDK {{ jdk_version }}
+  yum:
+    name: java-{{ jdk_version }}-openjdk-devel
+    state: present
+
+- name: Set JAVA_HOME environment variable
+  lineinfile:
+    path: /etc/profile
+    line: 'export JAVA_HOME=/usr/lib/jvm/java-{{ jdk_version }}-openjdk'
+    create: yes
+
+- name: Add Java binary directory to PATH
+  lineinfile:
+    path: /etc/profile
+    line: 'export PATH=$PATH:$JAVA_HOME/bin'
+    create: yes
+
+- name: Verify Java version
+  command: java -version
+  register: java_version
+  changed_when: false
+
+- name: Show Java version
+  debug:
+    msg: "{{ java_version.stdout }}"

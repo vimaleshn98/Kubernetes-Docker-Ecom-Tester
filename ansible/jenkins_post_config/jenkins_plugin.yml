@@ -1,0 +1,63 @@
+---
+- name: Install Jenkins Plugins
+  hosts: jenkinserver
+  become: true
+  tasks:
+    - name: Get Jenkins CSRF token
+      uri:
+        url: "http://localhost:8080/crumbIssuer/api/json"
+        method: GET
+        user: "admin"
+        password: "6cc75d1c20134ff8bcbd0a900aea1274"
+        force_basic_auth: yes
+      register: csrf_response
+
+    - name: Install Terraform plugin using Jenkins API
+      uri:
+        url: "http://localhost:8080/pluginManager/installPlugin?plugin.terraform=latest"
+        method: POST
+        user: "admin"
+        password: "6cc75d1c20134ff8bcbd0a900aea1274"
+        force_basic_auth: yes
+        headers:
+          "Jenkins-Crumb": "{{ csrf_response.json.crumb }}"
+      register: result
+
+    - name: Output result of plugin installation
+      debug:
+        msg: "Plugin installation result: {{ result }}"
+
+    - name: Install Azure plugin
+      jenkins_plugin:
+        name: azure-credentials
+        state: present
+
+    - name: Install Parameterized Trigger Plugin
+      jenkins_plugin:
+        name: parameterized-trigger
+        state: present
+
+    - name: Install JUnit Plugin
+      jenkins_plugin:
+        name: junit
+        state: present
+
+    - name: Install Artifactory Plugin
+      jenkins_plugin:
+        name: artifactory
+        state: present
+
+    - name: Install Jenkins SSH Agent Plugin
+      jenkins_plugin:
+        name: ssh-agent
+        state: present
+
+    - name: Install Kubernetes Docker Plugin
+      jenkins_plugin:
+        name: docker-plugin
+        state: present
+
+    - name: Restart Jenkins after plugin installation
+      service:
+        name: jenkins
+        state: restarted

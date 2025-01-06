@@ -1,0 +1,16 @@
+pipeline {
+    agent{
+        label 'executor'
+    }
+
+    environment {
+        // Define currency conversion environment variables
+        SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME = 'spring-boot-microservice-currency-conversion-service'      // Spring Boot app name
+        SPRING_BOOT_CURRENCY_CONVERSION_PORT = 8100                          // Spring Boot application port
+        DOCKER_CURRENCY_CONVERSION_IMAGE_NAME = 'spring-boot-microservice-currency-conversion-service'   // Docker image name
+        DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
+        DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
+                
+    }
+
+}

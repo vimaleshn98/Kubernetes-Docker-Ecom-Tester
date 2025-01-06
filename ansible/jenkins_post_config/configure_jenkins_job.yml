@@ -1,0 +1,32 @@
+---
+- name: Configure Jenkins Job with Parameters
+  hosts: jenkins_server
+  become: true
+  tasks:
+    - name: Create or update Jenkins job with parameterized trigger
+      jenkins_job:
+        name: "my_pipeline_job"
+        config:
+          - job:
+              name: "my_pipeline_job"
+              description: "Job with parameterized triggers"
+              parameters:
+                - string:
+                    name: "BRANCH_NAME"
+                    default: "main"
+                    description: "Git branch to build"
+              triggers:
+                - trigger:
+                    type: "pollSCM"
+                    scm:
+                      - git:
+                          url: "https://github.com/my_repo.git"
+                          branch: "${BRANCH_NAME}"
+      notify:
+        - Restart Jenkins
+
+  handlers:
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted

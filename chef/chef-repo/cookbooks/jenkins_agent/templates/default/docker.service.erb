@@ -1,0 +1,22 @@
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service time-set.target
+Wants=network-online.target containerd.service
+Requires=docker.socket
+
+[Service]
+Type=notify
+ExecStart=<%= @docker_exec_start %>
+ExecReload=/bin/kill -s HUP $MAINPID
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+MountFlags=slave
+SyslogIdentifier=dockerd
+TimeoutStartSec=0
+TimeoutStopSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

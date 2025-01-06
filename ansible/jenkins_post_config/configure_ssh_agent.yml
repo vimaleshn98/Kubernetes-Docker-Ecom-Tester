@@ -1,0 +1,16 @@
+---
+- name: Configure SSH Agent for Jenkins
+  hosts: jenkins_server
+  become: true
+  tasks:
+    - name: Add SSH key to Jenkins credentials
+      jenkins_credentials:
+        name: "my_ssh_key"
+        description: "SSH key for remote access"
+        private_key: "/path/to/my/ssh_private_key"
+        state: present
+
+    - name: Add the SSH agent plugin configuration to Jenkins
+      jenkins_plugin:
+        name: ssh-agent
+        state: present

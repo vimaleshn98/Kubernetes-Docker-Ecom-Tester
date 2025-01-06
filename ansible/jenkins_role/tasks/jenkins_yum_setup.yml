@@ -1,0 +1,53 @@
+# roles/jenkins/tasks/main.yml
+---
+- name: Install dependencies
+  become: true
+  yum:
+    name:
+      - curl
+      - wget
+      - gnupg
+    state: present
+
+- name: Add Jenkins repository
+  become: true
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+
+- name: Create Jenkins repo file
+  become: true
+  copy:
+    dest: /etc/yum.repos.d/jenkins.repo
+    content: |
+      [jenkins]
+      name=Jenkins-stable
+      baseurl=http://pkg.jenkins.io/redhat/jenkins-{{ jenkins_version }}-1.1.0/
+      gpgcheck=1
+      gpgkey=https://pkg.jenkins.io/redhat/jenkins.io.key
+      enabled=1
+    mode: '0644'
+
+- name: Install Jenkins
+  become: true
+  yum:
+    name: jenkins
+    state: present
+
+- name: Start and enable Jenkins service
+  become: true
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true
+
+- name: Ensure Jenkins is running
+  uri:
+    url: http://localhost:8080
+    method: GET
+    status_code: 200
+  register: result
+
+- name: Output Jenkins setup information
+  debug:
+    msg: "Jenkins setup complete, Jenkins is running at http://localhost:8080"

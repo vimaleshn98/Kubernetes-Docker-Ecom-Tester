@@ -1,0 +1,36 @@
+---
+# tasks file for jenkins_role
+- name: Ensure system facts are gathered
+  setup:
+
+- name: Update and upgrade apt packages (Debian-based)
+  apt:
+    update_cache: yes
+    upgrade: yes
+  when: ansible_os_family | lower == 'debian'
+
+- name: Update and upgrade yum packages (RedHat-based)
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_os_family | lower == 'redhat'
+
+# Conditionally include RedHat tasks
+- name: Install software for RedHat systems
+  include_tasks: yum_jdk_setup.yml
+  when: ansible_os_family | lower == 'redhat'
+
+# Conditionally include Debian tasks (if needed)
+- name: Install software for Debian-based systems
+  include_tasks: debian_jdk_setup.yml
+  when: ansible_os_family | lower == 'debian'
+
+# Conditionally include RedHat tasks
+- name: Install software for RedHat systems
+  include_tasks: jenkins_yum_setup.yml
+  when: ansible_os_family | lower == 'redhat'
+
+# Conditionally include Debian tasks (if needed)
+- name: Install software for Debian-based systems
+  include_tasks: jenkins_debian_setup.yml
+  when: ansible_os_family | lower == 'debian'

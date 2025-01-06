@@ -1,0 +1,113 @@
+# Chef
+.chef/*.pem
+.chef/encrypted_data_bag_secret
+.chef/syntaxcache
+.chef/chef_guid
+# Ruby
+.rake_test_cache
+.rvmrc
+.rbenv-version
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+.\#*
+
+# Emacs org-mode
+.org-id-locations
+*_archive
+
+# SublimeText
+*.sublime-workspace
+
+# TextMate
+*.tmproj
+*.tmproject
+tmtags
+
+# Vim
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+# OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
+# Chef-specific ignore rules
+
+# Chef client logs
+*.log
+
+# Chef cache and backup directories
+chef-client.log
+chef-client.pid
+chef_run
+*.json
+
+# Chef-specific temporary files
+berks-cachier
+chef-solo
+*.tar.gz
+
+# Knife configuration files
+.chef/knife.rb
+.chef/credentials
+.chef/config.rb
+
+# ChefDK (Chef Development Kit) files
+.docker/
+.docker-compose.yml
+.chefdotcom/
+
+# Vagrant
+.vagrant/
+
+# Ruby environment files
+.ruby-version
+.ruby-gemset
+
+# Gem dependencies
+/.bundle
+/vendor/bundle
+
+# Editor and IDE-specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Other typical files to ignore
+node_modules/
+*.bak
+*.tmp
+*.~*
+
+
+
+devops_admin

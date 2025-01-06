@@ -1,0 +1,80 @@
+---
+- name: Install dependencies
+  become: true
+  apt:
+    name:
+      - curl
+      - gnupg
+      - lsb-release
+      - coreutils 
+    state: present
+
+- name: Add Jenkins apt repository key
+  become: true
+  command: wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian/jenkins.io-2023.key
+            
+  
+- name: Add Jenkins APT repository to sources list
+  shell: |
+    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+  become: true
+
+- name: Update APT package list
+  apt:
+    update_cache: yes
+  become: true
+
+# - name: Update init-system-helpers package
+#   apt:
+#     name: init-system-helpers
+#     state: latest
+#   become: true
+
+- name: Download init-system-helpers version 1.54 .deb package
+  get_url:
+    url: "http://archive.ubuntu.com/ubuntu/pool/main/i/init-system-helpers/init-system-helpers_1.57_all.deb"
+    dest: "/tmp/init-system-helpers_1.57_all.deb"
+
+- name: Install init-system-helpers package
+  apt:
+    deb: "/tmp/init-system-helpers_1.57_all.deb"
+    state: present
+
+- name: Fix broken packages
+  apt:
+    upgrade: dist
+    force_apt_get: yes
+  become: true
+
+- name: Unhold any held packages
+  command: apt-mark unhold init-system-helpers
+  become: true
+
+- name: Install Jenkins
+  become: true
+  apt:
+    name: jenkins
+    state: present
+
+- name: Start and enable Jenkins service
+  become: true
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true
+
+- name: Ensure Jenkins is running
+  uri:
+    url: http://localhost:8080
+    method: GET
+    status_code: 403
+  register: result
+  ignore_errors: true
+
+- name: Debug the result of the Jenkins check
+  debug:
+    var: result
+
+- name: Output Jenkins setup information
+  debug:
+    msg: "Jenkins setup complete, Jenkins is running at http://localhost:8080"

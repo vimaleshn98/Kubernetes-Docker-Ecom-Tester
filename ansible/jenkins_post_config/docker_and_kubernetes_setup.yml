@@ -1,0 +1,30 @@
+---
+- name: Install Docker and Kubernetes Setup for Jenkins
+  hosts: jenkins_server
+  become: true
+  tasks:
+    - name: Install Docker
+      package:
+        name: docker.io
+        state: present
+
+    - name: Add Jenkins user to Docker group
+      user:
+        name: jenkins
+        group: docker
+        append: yes
+
+    - name: Install Kubernetes Plugin
+      jenkins_plugin:
+        name: kubernetes
+        state: present
+
+    - name: Install Docker Plugin
+      jenkins_plugin:
+        name: docker-plugin
+        state: present
+
+    - name: Restart Jenkins after Docker and Kubernetes installation
+      service:
+        name: jenkins
+        state: restarted

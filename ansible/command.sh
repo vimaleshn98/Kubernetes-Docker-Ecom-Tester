@@ -1,0 +1,1 @@
+ansible-playbook -i admin.ini playbook.yml

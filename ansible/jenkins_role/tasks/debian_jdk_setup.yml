@@ -1,0 +1,61 @@
+---
+- name: Update apt repository
+  apt:
+    update_cache: yes
+
+- name: Install OpenJDK {{ jdk_version }}
+  become: true
+  apt:
+    name: "openjdk-{{ jdk_version }}-jdk"
+    state: present
+
+- name: Set JAVA_HOME in /etc/profile for all users
+  lineinfile:
+    path: /etc/profile
+    line: 'export JAVA_HOME=/usr/lib/jvm/java-{{ jdk_version }}-openjdk-amd64'
+    create: yes
+    state: present
+
+- name: Add JAVA_HOME to PATH in /etc/profile for all users
+  lineinfile:
+    path: /etc/profile
+    line: 'export PATH=$PATH:$JAVA_HOME/bin'
+    create: yes
+    state: present
+
+- name: Set JAVA_HOME in user's .bashrc
+  lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    line: 'export JAVA_HOME=/usr/lib/jvm/java-{{ jdk_version }}-openjdk-amd64'
+    create: yes
+    state: present
+  when: ansible_user != 'root'
+
+- name: Add JAVA_HOME to PATH in user's .bashrc
+  lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    line: 'export PATH=$PATH:$JAVA_HOME/bin'
+    create: yes
+    state: present
+  when: ansible_user != 'root'
+
+# - name: Set JAVA_HOME environment variable
+#   lineinfile:
+#     path: /etc/environment
+#     line: 'JAVA_HOME=/usr/lib/jvm/java-{{ jdk_version }}-openjdk-amd64'
+#     create: yes
+
+# - name: Add Java binary directory to PATH
+#   lineinfile:
+#     path: /etc/environment
+#     line: 'PATH=$PATH:/usr/lib/jvm/java-{{ jdk_version }}-openjdk-amd64/bin'
+#     create: yes
+
+- name: Verify Java version
+  command: java -version
+  register: java_version
+  changed_when: false
+
+- name: Show Java version
+  debug:
+    msg: "{{ java_version.stderr if java_version.stderr else java_version.stdout }}"

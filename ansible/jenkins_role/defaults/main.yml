@@ -1,0 +1,5 @@
+---
+# defaults file for jenkins_role
+jdk_version: "17"  # Default JDK version
+jenkins_version: "2.463"
+jenkins_home: "/var/lib/jenkins"

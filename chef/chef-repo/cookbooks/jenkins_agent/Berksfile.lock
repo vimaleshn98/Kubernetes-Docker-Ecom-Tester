@@ -1,0 +1,9 @@
+DEPENDENCIES
+  jenkins (~> 9.5.23)
+
+GRAPH
+  dpkg_autostart (0.4.14)
+  jenkins (9.5.23)
+    dpkg_autostart (>= 0.0.0)
+    yum-epel (>= 0.0.0)
+  yum-epel (5.0.8)

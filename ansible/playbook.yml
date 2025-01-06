@@ -1,0 +1,6 @@
+---
+- name: Install and Configure jenkins Server
+  hosts: jenkinserver
+  become: true # If you need sudo privileges
+  roles:
+    - jenkins_role # This is the role you're running
