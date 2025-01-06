@@ -60,6 +60,7 @@ pipeline {
                     }
                 }
                 steps{
+                    input message: 'Do you want to proceed with the deployment?', ok: 'Yes, deploy'
                     dir("${SPRING_BOOT_APP_NAME}") {
                         sh(script: 'mvn clean validate')
                     }
