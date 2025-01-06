@@ -1,7 +1,9 @@
 pipeline {
-    agent{
-        label 'executor'
-    }
+    // agent{
+    //     label 'executor'
+    // }
+    
+    agent none
 
     environment {
         // Define currency conversion environment variables
