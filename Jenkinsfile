@@ -150,7 +150,7 @@ pipeline {
             agent {
                 docker {
                     image 'bitnami/azure-cli:latest'
-                    args '--entrypoint=""'
+                    args '--entrypoint=""  -u root'
                 }
             }
             steps {
@@ -158,6 +158,7 @@ pipeline {
                     // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
                     withCredentials([usernamePassword(credentialsId: 'azure-pat-token', usernameVariable: 'USERNAME', passwordVariable: 'PAT'), string(credentialsId: 'azure_tenant', variable: 'TENANT_ID')]) {    
                         // Authenticate using Azure CLI
+                        
                         sh """
                             az login --service-principal -u ${USERNAME} -p ${PAT} --tenant ${TENANT_ID}
                         """
