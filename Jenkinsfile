@@ -57,6 +57,7 @@ pipeline {
                 agent {
                     docker {
                         image 'maven:3.9.6-eclipse-temurin-21-alpine'
+                        args '--user root'
                     }
                 }
                 steps{
