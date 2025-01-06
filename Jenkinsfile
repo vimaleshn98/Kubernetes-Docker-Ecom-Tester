@@ -123,13 +123,29 @@ pipeline {
                         always{
                             echo(message: 'ReactJs artifacts stage ')
                         }
-                        success{
-                            echo(message: 'ReactJs artifacts stage successfull')
+                        // success{
+                        //     echo(message: 'ReactJs artifacts stage successfull')
+                        //     input message: 'Do you want to proceed with the deployment?', ok: 'Yes, deploy'
+                        //     archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/build/**/*", fingerprint: true
+                        //     archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
+                        // }
+                        success {
+                            echo(message: 'ReactJs artifacts stage successful')
                             input message: 'Do you want to proceed with the deployment?', ok: 'Yes, deploy'
-                            archiveArtifacts artifacts: "${REACT_APP_NAME}/build"
-                            archiveArtifacts artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
+                            
+                            // Debugging: Print out directory structure of ${REACT_APP_NAME}/build
+                            sh "ls -l ${REACT_APP_NAME}/build"  // Ensure the build directory exists and has files
 
+                            // Debugging: Print out directory structure of ${REACT_APP_NAME}
+                            sh "ls -l ${REACT_APP_NAME}"  // Ensure we have access to the correct folder
+
+                            // input message: 'Do you want to proceed with the deployment?', ok: 'Yes, deploy'
+
+                            // Archive the build folder and all files except node_modules
+                            archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/build/**/*", fingerprint: true
+                            archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
                         }
+
                         unsuccessful{
                             echo(message: 'ReactJs build unsuccessfull')
                         }
