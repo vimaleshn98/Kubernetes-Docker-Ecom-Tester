@@ -60,11 +60,6 @@ pipeline {
                     }
                 }
                 steps{
-                    input message: 'Do you approve to continue?', 
-                        ok: 'Yes',
-                        parameters: [
-                            choice(name: 'Proceed', choices: ['Yes', 'No'], description: 'Do you want to proceed with the deployment?')
-                        ]
                     dir("${SPRING_BOOT_APP_NAME}") {
                         sh(script: 'mvn clean validate')
                     }
@@ -80,6 +75,63 @@ pipeline {
                         echo(message: 'maven validations unsuccessfull')
                     }
                 }
+        }
+        stage('Parallel Build artifacts eCommersApp project'){
+            parallel {
+                stage("Build eCommersApp java project"){
+                    agent {
+                        docker {
+                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps{
+                        dir("${SPRING_BOOT_APP_NAME}") {
+                            sh(script: 'mvn -B -DskipTests clean package')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'maven build stage ')
+                        }
+                        success{
+                            echo(message: 'maven build successfull')
+                            archiveArtifacts artifacts: "${SPRING_BOOT_APP_NAME}/target/*.jar"
+                        }
+                        unsuccessful{
+                            echo(message: 'maven build unsuccessfull')
+                        }
+                    }
+                }
+                stage("Build eCommersApp ReactJs project"){
+                    agent {
+                        docker {
+                            image 'node:22-alpine3.21'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps{
+                        dir("${REACT_APP_NAME}") {
+                            sh(script: 'npm install')
+                            sh(script: 'npm run build')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'ReactJs artifacts stage ')
+                        }
+                        success{
+                            echo(message: 'ReactJs artifacts stage successfull')
+                            archiveArtifacts artifacts: "${REACT_APP_NAME}/build"
+                            archiveArtifacts artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
+
+                        }
+                        unsuccessful{
+                            echo(message: 'ReactJs build unsuccessfull')
+                        }
+                    }
+                }
+            }
         }
     }
 
