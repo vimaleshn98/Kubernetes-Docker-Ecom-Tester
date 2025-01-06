@@ -144,6 +144,12 @@ pipeline {
                 }
             }
         }
+        stage('List Workspace') {
+            steps {
+                // List the contents of the workspace (detailed view)
+                sh 'ls -la'
+            }
+        }
     }
 
 }
