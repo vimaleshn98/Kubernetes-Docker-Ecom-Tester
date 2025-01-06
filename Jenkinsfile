@@ -14,6 +14,8 @@ pipeline {
         // DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
         // DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
         MAVEN_HOME = '/usr/share/maven'  // Set the Maven home path in the container       
+        AZURE_DEVOPS_ORG = 'clouduserpaf9b340f'  // Azure DevOps organization
+        AZURE_DEVOPS_FEED = 'kubernete' // Azure Artifacts feed name
     }
     stages {
         stage("maven and react js versions used here"){
@@ -144,14 +146,51 @@ pipeline {
                 }
             }
         }
-        stage('List Workspace') {
-            agent{
-                label 'executor'
+        stage('Upload Artifact to Azure DevOps') {
+            agent {
+                docker {
+                    image 'node:22-alpine3.21'
+                    args '-v $HOME/.m2:/root/.m2'
+                }
             }
             steps {
-                // List the contents of the workspace (detailed view)
-                sh 'ls -la'
+                script {
+                    // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
+                    withCredentials([usernamePassword(credentialsId: 'azure-pat-token', usernameVariable: 'USERNAME', passwordVariable: 'PAT'), string(credentialsId: 'azure_tenant', variable: 'TENANT_ID')]) {    
+                        // Authenticate using Azure CLI
+                        sh """
+                            az login --service-principal -u ${USERNAME} -p ${PAT} --tenant ${TENANT_ID}
+                        """
+
+                        // Dynamically set the version using the Jenkins build number
+                        def buildVersion = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
+
+                        // Define the artifact file path from the workspace (from Jenkins build output)
+                        def artifactFile = "${SPRING_BOOT_APP_NAME}/target"  // Modify this path according to your project
+
+                        // Use Azure CLI to upload to Azure Artifacts
+                        sh """
+                            az artifacts universal publish \
+                                --organization https://dev.azure.com/${AZURE_DEVOPS_ORG} \
+                                --feed ${AZURE_DEVOPS_FEED} \
+                                --package ${SPRING_BOOT_APP_NAME} \
+                                --version ${buildVersion} \
+                                --path ${artifactFile}
+                        """
+                    }
+                }
             }
+            post{
+                    always{
+                        echo(message: 'maven build pushed to Artifacts')
+                    }
+                    success{
+                        echo(message: 'maven build pushed to Artifacts successfull')
+                    }
+                    unsuccessful{
+                        echo(message: 'maven build pushed to Artifacts unsuccessfull')
+                    }
+                }
         }
     }
 
