@@ -143,7 +143,7 @@ pipeline {
 
                             // Archive the build folder and all files except node_modules
                             archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/build/**/*", fingerprint: true
-                            archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
+                            // archiveArtifacts allowEmptyArchive: true, artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
                         }
 
                         unsuccessful{
