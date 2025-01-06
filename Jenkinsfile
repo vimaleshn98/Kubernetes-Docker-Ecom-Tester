@@ -21,12 +21,13 @@ pipeline {
                 stage('Maven version'){
                     agent {
                         docker {
-                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            image 'maven:3.9.9-eclipse-temurin-21-alpine'
                             args '-v $HOME/.m2:/root/.m2'
                         }
                     }
                     steps{
                         sh(script: 'mvn --version')
+                        sh(script: 'java --version')
                     }
                     post{
                         always{
@@ -55,7 +56,7 @@ pipeline {
         stage("validation eCommersApp maven project"){
                 agent {
                     docker {
-                        image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                        image 'maven:3.9.9-eclipse-temurin-21-alpine'
                         args '-v $HOME/.m2:/root/.m2'
                     }
                 }
@@ -81,7 +82,7 @@ pipeline {
                 stage("Build eCommersApp java project"){
                     agent {
                         docker {
-                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            image 'maven:3.9.9-eclipse-temurin-21-alpine'
                             args '-v $HOME/.m2:/root/.m2'
                         }
                     }
