@@ -150,7 +150,7 @@ pipeline {
             agent {
                 docker {
                     image 'bitnami/azure-cli:latest'
-                    args '-v $HOME/.m2:/root/.m2'
+                    args '--entrypoint=""'
                 }
             }
             steps {
