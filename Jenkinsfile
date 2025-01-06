@@ -149,7 +149,7 @@ pipeline {
         stage('Upload Artifact to Azure DevOps') {
             agent {
                 docker {
-                    image 'node:22-alpine3.21'
+                    image 'bitnami/azure-cli:latest'
                     args '-v $HOME/.m2:/root/.m2'
                 }
             }
