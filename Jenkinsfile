@@ -65,7 +65,7 @@ pipeline {
                         parameters: [
                             choice(name: 'Proceed', choices: ['Yes', 'No'], description: 'Do you want to proceed with the deployment?')
                         ]
-                    dir("Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_NAME}") {
+                    dir("${SPRING_BOOT_APP_NAME}") {
                         sh(script: 'mvn clean validate')
                     }
                 }
