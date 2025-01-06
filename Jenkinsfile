@@ -145,6 +145,9 @@ pipeline {
             }
         }
         stage('List Workspace') {
+            agent{
+                label 'executor'
+            }
             steps {
                 // List the contents of the workspace (detailed view)
                 sh 'ls -la'
