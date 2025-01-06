@@ -60,7 +60,7 @@ pipeline {
                     }
                 }
                 steps{
-                    dir("Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}") {
+                    dir("Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_NAME}") {
                         sh(script: 'mvn clean validate')
                     }
                 }
