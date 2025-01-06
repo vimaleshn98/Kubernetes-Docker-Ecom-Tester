@@ -37,7 +37,7 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const apiUrl = process.env.REACT_APP_API_URL
+    const apiUrl = process.env.REACT_APP_API_URL || 'localhost:8080';
     try {
       const authHeader = `Basic ${btoa(`${form.username}:${form.password}`)}`;
       console.log(`http://${apiUrl}/ecom`);

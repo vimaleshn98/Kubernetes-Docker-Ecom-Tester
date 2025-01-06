@@ -36,7 +36,7 @@ const Product = () => {
 
     setFilteredProducts(filteredProducts);
   };
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = process.env.REACT_APP_API_URL || 'localhost:8080';
   useEffect(() => {
     axios
       .get(`http://${apiUrl}/ecom/products/all`)

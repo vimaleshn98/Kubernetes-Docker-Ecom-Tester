@@ -20,7 +20,7 @@ const OrderDetails = () => {
   const handleProfileSection = (userid) => {
     navigate(`/user/profile/${userid}`);
   };
-  const apiUrl = process.env.REACT_APP_API_URL
+  const apiUrl = process.env.REACT_APP_API_URL || 'localhost:8080';
  
   const handeldeleteOrder = (orderId) => {
     axios

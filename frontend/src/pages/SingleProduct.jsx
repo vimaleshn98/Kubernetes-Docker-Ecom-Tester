@@ -9,7 +9,7 @@ const SingleProduct = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState({});
   const userid = localStorage.getItem("userid");
-  const apiUrl = process.env.REACT_APP_API_URL
+  const apiUrl = process.env.REACT_APP_API_URL || 'localhost:8080';
   useEffect(() => {
     axios
       .get(`http://${apiUrl}/ecom/products/${productId}`)

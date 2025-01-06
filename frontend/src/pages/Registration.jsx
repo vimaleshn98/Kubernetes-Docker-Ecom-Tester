@@ -35,7 +35,7 @@ const Registration = () => {
     e.preventDefault();
   
     try {
-      const apiUrl = process.env.REACT_APP_API_URL
+      const apiUrl = process.env.REACT_APP_API_URL || 'localhost:8080';
       const response = await axios.post(`http://${apiUrl}/ecom/customers`, form);
       
       if (response.status === 200) {

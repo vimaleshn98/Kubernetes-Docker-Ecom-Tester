@@ -113,7 +113,9 @@ pipeline {
                     steps{
                         dir("${REACT_APP_NAME}") {
                             sh(script: 'npm install')
-                            sh(script: 'npm run build')
+                            withEnv(['CI=false']) {
+                                sh(script: 'npm run build')
+                            }
                         }
                     }
                     post{

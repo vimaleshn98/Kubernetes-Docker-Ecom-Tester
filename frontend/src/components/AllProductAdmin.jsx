@@ -55,7 +55,7 @@ const AllProductAdmin = () => {
         alert(error.response.data.message);
       });
   };
-  const apiUrl = process.env.REACT_APP_API_URL
+  const apiUrl = process.env.REACT_APP_API_URL || 'localhost:8080';
   useEffect(() => {
     axios
       .get(`http://${apiUrl}/ecom/products/all?sort=desc`)
