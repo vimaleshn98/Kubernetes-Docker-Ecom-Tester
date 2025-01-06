@@ -61,7 +61,6 @@ pipeline {
                     }
                 }
                 steps{
-                    input message: 'Do you want to proceed with the deployment?', ok: 'Yes, deploy'
                     dir("${SPRING_BOOT_APP_NAME}") {
                         sh(script: 'mvn clean validate')
                     }
@@ -126,6 +125,7 @@ pipeline {
                         }
                         success{
                             echo(message: 'ReactJs artifacts stage successfull')
+                            input message: 'Do you want to proceed with the deployment?', ok: 'Yes, deploy'
                             archiveArtifacts artifacts: "${REACT_APP_NAME}/build"
                             archiveArtifacts artifacts: "${REACT_APP_NAME}/**", excludes: "${REACT_APP_NAME}/node_modules/**"
 
