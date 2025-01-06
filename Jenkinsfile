@@ -13,7 +13,7 @@ pipeline {
         // DOCKER_CURRENCY_CONVERSION_IMAGE_NAME = 'spring-boot-microservice-currency-conversion-service'   // Docker image name
         // DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
         // DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
-                
+        MAVEN_HOME = '/usr/share/maven'  // Set the Maven home path in the container       
     }
     stages {
         stage("maven and react js versions used here"){
@@ -57,7 +57,6 @@ pipeline {
                 agent {
                     docker {
                         image 'maven:3.9.9-eclipse-temurin-21-alpine'
-                        args ''
                     }
                 }
                 steps{
