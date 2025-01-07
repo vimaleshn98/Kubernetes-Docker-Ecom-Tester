@@ -155,12 +155,12 @@ pipeline {
 
                     sh "echo ${env.WORKSPACE}"
 
-                    def BUILD_NUMBER = "${env.BUILD_ID}"
-                    def ARTIFICATE_PATH = "${env.WORKSPACE}"
+                    def BUILD_NUMBER_OUT = "${env.BUILD_ID}"
+                    def ARTIFICATE_PATH_OUT = "${env.WORKSPACE}"
 
                     sh '''
-                        echo $BUILD_NUMBER
-                        echo $ARTIFICATE_PATH
+                        echo $BUILD_NUMBER_OUT
+                        echo $ARTIFICATE_PATH_OUT
                     '''
 
                     // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
