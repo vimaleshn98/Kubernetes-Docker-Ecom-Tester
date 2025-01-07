@@ -182,7 +182,8 @@ pipeline {
                                 --feed $AZURE_DEVOPS_FEED \
                                 --package $AZURE_DEVOPS_PACKAGE \
                                 --scope project \
-                                --description "ecom app Packages"
+                                --description "ecom app Packages" \
+                                --name ecom \
                                 --version $buildVersion \
                                 --path $artifactFile
                         '''
