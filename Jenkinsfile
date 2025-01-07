@@ -152,6 +152,8 @@ pipeline {
             }
             steps {
                 script {
+
+                    def 
                     // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
                     withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT')]) {    
                         // Authenticate using Azure CLI                        
@@ -165,18 +167,24 @@ pipeline {
                             # Log into Azure DevOps using the injected PAT
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
-                        sh 'echo $env.WORKSPACE'
+
+                        sh "echo ${env.WORKSPACE}"
+                        def BUILD_NUMBER = "${env.BUILD_ID}"
+                        def ARTIFICATE_PATH = "${env.WORKSPACE}"
+
+                        sh '''
+                            echo $BUILD_NUMBER
+                            echo $ARTIFICATE_PATH
+                        '''
+
                         // Use Azure CLI to upload to Azure Artifacts
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+  
 
                         sh '''
-                            echo $env.BUILD_NUMBER
-
-                        '''    
-
-                        sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $env.BUILD_NUMBER --path $env.WORKSPACE
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_NUMBER --path $ARTIFICATE_PATH
                         '''
+                        
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
 
