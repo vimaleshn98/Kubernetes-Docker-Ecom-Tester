@@ -152,17 +152,7 @@ pipeline {
             }
             steps {
                 script {
-
-                    sh "echo ${env.WORKSPACE}"
-
-                    def BUILD_NUMBER_OUT = "${env.BUILD_ID}"
-                    def ARTIFICATE_PATH_OUT = "${env.WORKSPACE}"
-
-                    sh '''
-                        echo $BUILD_NUMBER_OUT
-                        echo $ARTIFICATE_PATH_OUT
-                    '''
-
+                    def BUILD_NUMBER = "${env.BUILD_ID}"
                     // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
                     withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT')]) {    
                         // Authenticate using Azure CLI                        
@@ -177,22 +167,12 @@ pipeline {
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
 
-                        sh "echo ${env.WORKSPACE}"
-
-                        def BUILD_NUMBER = "1.${env.BUILD_ID}.0"
-                        def ARTIFICATE_PATH = "${env.WORKSPACE}"
-
-                        sh '''
-                            echo $BUILD_NUMBER
-                            echo $ARTIFICATE_PATH
-                        '''
-
                         // Use Azure CLI to upload to Azure Artifacts
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
   
 
                         sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_NUMBER --path "${SPRING_BOOT_APP_NAME}/target/*.jar"
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version "1.${BUILD_NUMBER}.0" --path "${SPRING_BOOT_APP_NAME}/target/"
                         '''
 
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
