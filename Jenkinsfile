@@ -154,12 +154,6 @@ pipeline {
                     args '--entrypoint=""  -u root'
                 }
             }
-            when {
-                // This stage will run only if the previous stages (Build, Test) succeed.
-                expression { 
-                    return currentBuild.result == 'SUCCESS'
-                }
-            }
             steps {
                 script {
                     // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
