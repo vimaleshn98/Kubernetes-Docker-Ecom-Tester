@@ -254,70 +254,70 @@ pipeline {
             }
         }
         
-        stage('Parallel Docker Build Ecom project'){
-            parallel {
-                stage("Docker Build java Ecom project"){
-                    agent {
-                        label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
-                    }
-                    steps{
-                        script {
-                            // Build Docker image for the Spring Boot app
-                            sh '''#!/bin/bash                                
-                            pwd
-                            echo "--------------------------------------------------------------------"
-                            cd Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_NAME}
-                            echo "present working directory"                           
-                            pwd
-                            echo "---------------------------------------------------------------------"
-                            docker build --build-arg SPRING_BOOT_APP_NAME=${SPRING_BOOT_APP_NAME} --build-arg SPRING_BOOT_PORT=${SPRING_BOOT_APP_PORT} -t ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT} .
-                            '''
-                        }
-                    }
-                    post{
-                        always{
-                            echo(message: 'Docker Build java Ecom project running')
-                        }
-                        success{
-                            echo(message: 'Docker Build java Ecom project successfull')                        
-                        }
-                        unsuccessful{
-                            echo(message: 'Docker Build java Ecom project unsuccessfull')
-                        }
-                    }
-                }
-                stage("Docker Build java Ecom project"){
-                    agent {
-                        label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
-                    }
-                    steps{
-                        script {
-                            // Build Docker image for the Spring Boot app
-                            sh '''#!/bin/bash                                
-                            pwd
-                            echo "--------------------------------------------------------------------"
-                            cd Kubernetes-Docker-Ecom-Tester/${REACT_APP_NAME}
-                            echo "present working directory"                           
-                            pwd
-                            echo "---------------------------------------------------------------------"
-                            docker build --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT} .
-                            '''
-                        }
-                    }
-                    post{
-                        always{
-                            echo(message: 'Docker Build React Ecom project running')
-                        }
-                        success{
-                            echo(message: 'Docker Build React Ecom project successfull')                        
-                        }
-                        unsuccessful{
-                            echo(message: 'Docker Build React Ecom project unsuccessfull')
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Parallel Docker Build Ecom project'){
+        //     parallel {
+        //         stage("Docker Build java Ecom project"){
+        //             agent {
+        //                 label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
+        //             }
+        //             steps{
+        //                 script {
+        //                     // Build Docker image for the Spring Boot app
+        //                     sh '''#!/bin/bash                                
+        //                     pwd
+        //                     echo "--------------------------------------------------------------------"
+        //                     cd Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_NAME}
+        //                     echo "present working directory"                           
+        //                     pwd
+        //                     echo "---------------------------------------------------------------------"
+        //                     docker build --build-arg SPRING_BOOT_APP_NAME=${SPRING_BOOT_APP_NAME} --build-arg SPRING_BOOT_PORT=${SPRING_BOOT_APP_PORT} -t ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT} .
+        //                     '''
+        //                 }
+        //             }
+        //             post{
+        //                 always{
+        //                     echo(message: 'Docker Build java Ecom project running')
+        //                 }
+        //                 success{
+        //                     echo(message: 'Docker Build java Ecom project successfull')                        
+        //                 }
+        //                 unsuccessful{
+        //                     echo(message: 'Docker Build java Ecom project unsuccessfull')
+        //                 }
+        //             }
+        //         }
+        //         stage("Docker Build react Ecom project"){
+        //             agent {
+        //                 label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
+        //             }
+        //             steps{
+        //                 script {
+        //                     // Build Docker image for the Spring Boot app
+        //                     sh '''#!/bin/bash                                
+        //                     pwd
+        //                     echo "--------------------------------------------------------------------"
+        //                     cd Kubernetes-Docker-Ecom-Tester/${REACT_APP_NAME}
+        //                     echo "present working directory"                           
+        //                     pwd
+        //                     echo "---------------------------------------------------------------------"
+        //                     docker build --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT} .
+        //                     '''
+        //                 }
+        //             }
+        //             post{
+        //                 always{
+        //                     echo(message: 'Docker Build React Ecom project running')
+        //                 }
+        //                 success{
+        //                     echo(message: 'Docker Build React Ecom project successfull')                        
+        //                 }
+        //                 unsuccessful{
+        //                     echo(message: 'Docker Build React Ecom project unsuccessfull')
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
 
     }
