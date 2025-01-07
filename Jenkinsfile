@@ -169,13 +169,20 @@ pipeline {
                         def ARTIFACTPATH = "${env.WORKSPACE}/"
                         def BUILD_VERSION = "${env.BUILD_NUMBER}"
                         // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
-                        sh 'ls -la $ARTIFACTPATH'
+                        sh 'ls -la $ARTIFACTPATH/$SPRING_BOOT_APP_NAME'
                         // Use Azure CLI to upload to Azure Artifacts
-                        sh '''
-                            echo "Workspace Path: $ARTIFACTPATH"
+                        input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project=$AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_VERSION --path $ARTIFACTPATH
+                        sh '''
+                            echo $env.BUILD_NUMBER
+
+                        '''    
+
+                        sh '''
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project=$AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $env.BUILD_NUMBER --path $ARTIFACTPATH
                         '''
+                        input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+
 
                     }
                 }
