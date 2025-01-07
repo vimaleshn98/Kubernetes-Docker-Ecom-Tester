@@ -179,7 +179,7 @@ pipeline {
                         '''    
 
                         sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project=$AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $env.BUILD_NUMBER --path $ARTIFACTPATH
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_VERSION --path $ARTIFACTPATH
                         '''
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
