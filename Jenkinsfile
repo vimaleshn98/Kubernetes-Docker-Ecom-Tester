@@ -10,8 +10,8 @@ pipeline {
 
         DOCKER_JAVA_ECOM_IMAGE_NAME = 'eCommersApp-java'   // Docker image name
         DOCKER_REGISTRY = 'vimalesh198'            // Docker registry username
-        DOCKER_JAVA_ECOM_REPO = 'eCommersApp-springboot'          // Docker repository name
-        DOCKER_REACT_ECOM_REPO = 'eCommersApp-react'          // Docker repository name
+        DOCKER_JAVA_ECOM_REPO = 'ecommersapp-springboot'          // Docker repository name
+        DOCKER_REACT_ECOM_REPO = 'ecommersapp-react'          // Docker repository name
         
 
         MAVEN_HOME = '/usr/share/maven'  // Set the Maven home path in the container       
