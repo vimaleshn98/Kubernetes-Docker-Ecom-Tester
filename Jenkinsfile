@@ -153,31 +153,41 @@ pipeline {
                     args '--entrypoint=""  -u root'
                 }
             }
+            when {
+                // This stage will run only if the previous stages (Build, Test) succeed.
+                expression { currentBuild.result == 'SUCCESS' }
+            }
             steps {
                 script {
                     // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
-                    withCredentials([usernamePassword(credentialsId: 'azure-pat-token', usernameVariable: 'USERNAME', passwordVariable: 'PAT'), string(credentialsId: 'azure_tenant', variable: 'TENANT_ID')]) {    
-                        // Authenticate using Azure CLI
-                        input message: 'Do you want to continue?', ok: 'Yes'
-                        sh """
-                            az login --service-principal -u ${USERNAME} -p ${PAT} --tenant ${TENANT_ID}
-                        """
+                    withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT')]) {    
+                        // Authenticate using Azure CLI                        
+                        sh '''
+                            az extension add --name azure-devops
 
+                            apt-get update
+
+                            apt-get install libicu-dev -y
+                            
+                            # Log into Azure DevOps using the injected PAT
+                            echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
+                        '''
                         // Dynamically set the version using the Jenkins build number
                         def buildVersion = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
 
                         // Define the artifact file path from the workspace (from Jenkins build output)
-                        def artifactFile = "${SPRING_BOOT_APP_NAME}/target"  // Modify this path according to your project
+                        def artifactFile = "${env.WORKSPACE}/${SPRING_BOOT_APP_NAME}/target"  // Modify this path according to your project
 
                         // Use Azure CLI to upload to Azure Artifacts
-                        sh """
+                        sh '''
                             az artifacts universal publish \
-                                --organization https://dev.azure.com/${AZURE_DEVOPS_ORG} \
-                                --feed ${AZURE_DEVOPS_FEED} \
-                                --package ${SPRING_BOOT_APP_NAME} \
-                                --version ${buildVersion} \
-                                --path ${artifactFile}
-                        """
+                                --organization https://dev.azure.com/$AZURE_DEVOPS_ORG \
+                                --feed $AZURE_DEVOPS_FEED \
+                                --package $SPRING_BOOT_APP_NAME \
+                                --version $buildVersion \
+                                --path $artifactFile
+                        '''
+
                     }
                 }
             }
