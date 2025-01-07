@@ -14,8 +14,9 @@ pipeline {
         // DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
         // DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
         MAVEN_HOME = '/usr/share/maven'  // Set the Maven home path in the container       
-        AZURE_DEVOPS_ORG = 'clouduserpaf9b340f'  // Azure DevOps organization
-        AZURE_DEVOPS_FEED = 'kubernete' // Azure Artifacts feed name
+        AZURE_DEVOPS_ORG = 'devops734921'  // Azure DevOps organization
+        AZURE_DEVOPS_FEED = 'ecom_feed' // Azure Artifacts feed name
+        AZURE_DEVOPS_PACKAGE= 'ecom'
     }
     stages {
         stage("maven and react js versions used here"){
@@ -183,7 +184,9 @@ pipeline {
                             az artifacts universal publish \
                                 --organization https://dev.azure.com/$AZURE_DEVOPS_ORG \
                                 --feed $AZURE_DEVOPS_FEED \
-                                --package $SPRING_BOOT_APP_NAME \
+                                --package $AZURE_DEVOPS_PACKAGE \
+                                --scope project \
+                                --description "ecom app Packages"
                                 --version $buildVersion \
                                 --path $artifactFile
                         '''
