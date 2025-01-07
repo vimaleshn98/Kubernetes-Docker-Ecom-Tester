@@ -165,7 +165,7 @@ pipeline {
                             # Log into Azure DevOps using the injected PAT
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
-                        sh 'ls -la $env.WORKSPACE'
+                        sh 'echo $env.WORKSPACE'
                         // Use Azure CLI to upload to Azure Artifacts
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
