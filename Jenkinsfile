@@ -254,71 +254,156 @@ pipeline {
             }
         }
         
-        // stage('Parallel Docker Build Ecom project'){
-        //     parallel {
-        //         stage("Docker Build java Ecom project"){
-        //             agent {
-        //                 label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
-        //             }
-        //             steps{
-        //                 script {
-        //                     // Build Docker image for the Spring Boot app
-        //                     sh '''#!/bin/bash                                
-        //                     pwd
-        //                     echo "--------------------------------------------------------------------"
-        //                     cd Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_NAME}
-        //                     echo "present working directory"                           
-        //                     pwd
-        //                     echo "---------------------------------------------------------------------"
-        //                     docker build --build-arg SPRING_BOOT_APP_NAME=${SPRING_BOOT_APP_NAME} --build-arg SPRING_BOOT_PORT=${SPRING_BOOT_APP_PORT} -t ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT} .
-        //                     '''
-        //                 }
-        //             }
-        //             post{
-        //                 always{
-        //                     echo(message: 'Docker Build java Ecom project running')
-        //                 }
-        //                 success{
-        //                     echo(message: 'Docker Build java Ecom project successfull')                        
-        //                 }
-        //                 unsuccessful{
-        //                     echo(message: 'Docker Build java Ecom project unsuccessfull')
-        //                 }
-        //             }
-        //         }
-        //         stage("Docker Build react Ecom project"){
-        //             agent {
-        //                 label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
-        //             }
-        //             steps{
-        //                 script {
-        //                     // Build Docker image for the Spring Boot app
-        //                     sh '''#!/bin/bash                                
-        //                     pwd
-        //                     echo "--------------------------------------------------------------------"
-        //                     cd Kubernetes-Docker-Ecom-Tester/${REACT_APP_NAME}
-        //                     echo "present working directory"                           
-        //                     pwd
-        //                     echo "---------------------------------------------------------------------"
-        //                     docker build --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT} .
-        //                     '''
-        //                 }
-        //             }
-        //             post{
-        //                 always{
-        //                     echo(message: 'Docker Build React Ecom project running')
-        //                 }
-        //                 success{
-        //                     echo(message: 'Docker Build React Ecom project successfull')                        
-        //                 }
-        //                 unsuccessful{
-        //                     echo(message: 'Docker Build React Ecom project unsuccessfull')
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Parallel Docker Build Ecom project'){
+            parallel {
+                stage("Docker Build java Ecom project"){
+                    agent {
+                        label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
+                    }
+                    steps{
+                        script {
+                            def BUILD_NUMBER = "${env.BUILD_ID}"
+                            withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT'), usernamePassword(credentialsId: 'mysql_admin', passwordVariable: 'DB_PASSWORD', usernameVariable: 'DB_USERNAME')]) {
+                                // Build Docker image for the Spring Boot app
+                                sh '''#!/bin/bash                                
+                                pwd
+                                echo "--------------------------------------------------------------------"
+                                cd Kubernetes-Docker-Ecom-Tester/${SPRING_BOOT_APP_NAME}
+                                echo "present working directory"                           
+                                pwd
+                                echo "---------------------------------------------------------------------"
+                                docker build --build-arg AZURE_DEVOPS_PACKAGE=${AZURE_DEVOPS_PACKAGE} --build-arg AZURE_DEVOPS_FEED=${AZURE_DEVOPS_FEED} --build-arg BUILD_NUMBER="1.${BUILD_NUMBER}.0" --build-arg AZURE_DEVOPS_ORG=${AZURE_DEVOPS_ORG} --build-arg PAT=${PAT} --build-arg SPRING_BOOT_APP_NAME=${SPRING_BOOT_APP_NAME} --build-arg DB_HOST=${DB_HOST} --build-arg DB_PORT=${DB_PORT} --build-arg DB_NAME=${DB_NAME} --build-arg DB_USERNAME=${DB_USERNAME} --build-arg DB_PASSWORD=${DB_PASSWORD} --build-arg SPRING_BOOT_PORT=${SPRING_BOOT_APP_PORT} -t ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT} .
+                                '''
+                            }
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'Docker Build java Ecom project running')
+                        }
+                        success{
+                            echo(message: 'Docker Build java Ecom project successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Docker Build java Ecom project unsuccessfull')
+                        }
+                    }
+                }
+                stage("Docker Build react Ecom project"){
+                    agent {
+                        label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
+                    }
+                    steps{
+                        script {
+                            // Build Docker image for the Spring Boot app
+                            sh '''#!/bin/bash                                
+                            pwd
+                            echo "--------------------------------------------------------------------"
+                            cd Kubernetes-Docker-Ecom-Tester/${REACT_APP_NAME}
+                            echo "present working directory"                           
+                            pwd
+                            echo "---------------------------------------------------------------------"
+                            docker build --build-arg AZURE_DEVOPS_PACKAGE=${AZURE_DEVOPS_PACKAGE} --build-arg AZURE_DEVOPS_FEED=${AZURE_DEVOPS_FEED} --build-arg BUILD_NUMBER="1.${BUILD_NUMBER}.0" --build-arg AZURE_DEVOPS_ORG=${AZURE_DEVOPS_ORG} --build-arg PAT=${PAT} --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT} .
+                            '''
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'Docker Build React Ecom project running')
+                        }
+                        success{
+                            echo(message: 'Docker Build React Ecom project successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Docker Build React Ecom project unsuccessfull')
+                        }
+                    }
+                }
+            }
+        }
 
+        stage('Parallel Push Docker Image Ecom project'){
+            parallel {
+                stage("Push Docker Image java Ecom project"){
+                    agent {
+                        label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
+                    }
+                    steps {
+                        script {
+                            def userInput = input message: 'Do you want to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Push to java Ecom  Docker Hub?', name: 'Push')
+                            ]
+                            // Log in to Docker Hub and push the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker push ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT}
+                                '''
+                            }                   
+                        }
+                    }
+                    post{
+                        always{
+                            script {
+                                // Cleanup: remove the Docker image after successful build
+                                echo "Cleaning up Docker image..."
+                                sh '''#!/bin/bash
+                                echo "Removing image: ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT}"
+                                // docker rmi ${DOCKER_REGISTRY}/${DOCKER_JAVA_ECOM_REPO}:${GIT_COMMIT} || true
+                                '''
+                            }
+                        }
+                        success{
+                            echo(message: 'Push Docker Image spring-boot-microservice-currency-conversion-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Push Docker Image spring-boot-microservice-currency-conversion-service unsuccessfull')
+                        }
+                    }
+                }
+                stage("Push Docker Image react Ecom project"){
+                    agent {
+                        label 'executor'  // This will run the entire pipeline on a node with the label 'executor'
+                    }
+                    steps{
+                        script {
+                            def userInput = input message: 'Do you want to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Push to ecom reactjs Docker Hub?', name: 'Push')
+                            ]
+                            // Log in to Docker Hub and push the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker push ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT}
+                                '''
+                            }
+                    
+                            
+                        }
+                    }
+                    post{
+                        always{
+                            script {
+                                // Cleanup: remove the Docker image after successful build
+                                echo "Cleaning up Docker image..."
+                                sh '''#!/bin/bash
+                                echo "Removing image: ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT}"
+                                docker rmi ${DOCKER_REGISTRY}/${DOCKER_REACT_ECOM_REPO}:${GIT_COMMIT} || true
+                                '''
+                            }
+                        }
+                        success{
+                            echo(message: 'Push Docker Image spring-boot-microservice-eureka-naming-server successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Push Docker Image spring-boot-microservice-eureka-naming-server unsuccessfull')
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
