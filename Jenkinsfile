@@ -165,11 +165,7 @@ pipeline {
                             # Log into Azure DevOps using the injected PAT
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
-                        
-                        def ARTIFACTPATH = "${env.WORKSPACE}/"
-                        def BUILD_VERSION = "${env.BUILD_NUMBER}"
-                        // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
-                        sh 'ls -la $ARTIFACTPATH/$SPRING_BOOT_APP_NAME'
+                        sh 'ls -la $env.WORKSPACE'
                         // Use Azure CLI to upload to Azure Artifacts
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
@@ -179,7 +175,7 @@ pipeline {
                         '''    
 
                         sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_VERSION --path $ARTIFACTPATH
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $env.BUILD_NUMBER --path $env.WORKSPACE
                         '''
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
