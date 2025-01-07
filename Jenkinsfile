@@ -14,11 +14,11 @@ pipeline {
         // DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
         // DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
         MAVEN_HOME = '/usr/share/maven'  // Set the Maven home path in the container       
-        AZURE_DEVOPS_ORG = 'https://dev.azure.com/devops734921'  // Azure DevOps organization
+        AZURE_DEVOPS_ORG = 'https://dev.azure.com/devops7349'  // Azure DevOps organization
         AZURE_DEVOPS_FEED = 'ecom_feed' // Azure Artifacts feed name
         AZURE_DEVOPS_PACKAGE= 'ecom'
-        buildVersion = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
-        artifactFile = "${env.WORKSPACE}/"  // Modify this path according to your project
+        BUILD_VERSION = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
+        ARTIFACTPATH = "${env.WORKSPACE}/"  // Modify this path according to your project
     }
     stages {
         stage("maven and react js versions used here"){
@@ -175,6 +175,7 @@ pipeline {
                             echo $buildVersion
                             echo $artifactFile
                         '''
+                        input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
                         // Use Azure CLI to upload to Azure Artifacts
                         sh '''
                             az artifacts universal publish \
@@ -184,8 +185,8 @@ pipeline {
                                 --scope project \
                                 --description "ecom app Packages" \
                                 --name ecom \
-                                --version $buildVersion \
-                                --path $artifactFile
+                                --version $BUILD_VERSION \
+                                --path $ARTIFACTPATH
                         '''
 
                     }
