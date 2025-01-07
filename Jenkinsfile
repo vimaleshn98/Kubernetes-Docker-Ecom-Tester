@@ -168,14 +168,15 @@ pipeline {
                         '''
 
                         // Use Azure CLI to upload to Azure Artifacts
-                        input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+                        // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
   
 
                         sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version "1.${BUILD_NUMBER}.0" --path "${SPRING_BOOT_APP_NAME}/target/"
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name javaEcom --version "1.${BUILD_NUMBER}.0" --path "${SPRING_BOOT_APP_NAME}/target/"
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name reactEcom --version "1.${BUILD_NUMBER}.0" --path "${REACT_APP_NAME}/build/"
                         '''
 
-                        input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+                        // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
 
 
                     }
