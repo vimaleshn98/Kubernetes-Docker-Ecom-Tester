@@ -248,11 +248,12 @@ pipeline {
                 }
             }
         }
-        stage('Parallel Docker Build spring-boot-basic-microservice'){
-            parallel {
+        
+        // stage('Parallel Docker Build spring-boot-basic-microservice'){
+        //     parallel {
 
-            }
-        }
+        //     }
+        // }
 
 
     }
