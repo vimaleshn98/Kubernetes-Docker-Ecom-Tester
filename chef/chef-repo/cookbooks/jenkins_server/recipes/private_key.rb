@@ -31,6 +31,17 @@ jenkins_private_key_credentials node['jenkins_agent']['jenkins_agent_user'] do
 end
 
 
+azure_devops_pat = data_bag_item('jenkins_secrets', 'secret_text_credentials')['azure_PAT']
+
+# Create secret text credentials
+jenkins_secret_text_credentials node['jenkins_server']['secret_text_credentials_id'] do
+  id          node['jenkins_server']['secret_text_credentials_id']
+  description 'secret text credentials id'
+  secret      azure_devops_pat
+  only_if { node['jenkins_server']['reconfig'] == true }
+end
+
+
 
 # Create and use a temporary file for the private key
 # begin

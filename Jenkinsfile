@@ -17,6 +17,8 @@ pipeline {
         AZURE_DEVOPS_ORG = 'https://dev.azure.com/devops734921'  // Azure DevOps organization
         AZURE_DEVOPS_FEED = 'ecom_feed' // Azure Artifacts feed name
         AZURE_DEVOPS_PACKAGE= 'ecom'
+        buildVersion = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
+        artifactFile = "${env.WORKSPACE}/"  // Modify this path according to your project
     }
     stages {
         stage("maven and react js versions used here"){
@@ -169,12 +171,10 @@ pipeline {
                             # Log into Azure DevOps using the injected PAT
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
-                        // Dynamically set the version using the Jenkins build number
-                        def buildVersion = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
-
-                        // Define the artifact file path from the workspace (from Jenkins build output)
-                        def artifactFile = "${env.WORKSPACE}/${SPRING_BOOT_APP_NAME}/target"  // Modify this path according to your project
-
+                        sh '''
+                            echo $buildVersion
+                            echo $artifactFile
+                        '''
                         // Use Azure CLI to upload to Azure Artifacts
                         sh '''
                             az artifacts universal publish \

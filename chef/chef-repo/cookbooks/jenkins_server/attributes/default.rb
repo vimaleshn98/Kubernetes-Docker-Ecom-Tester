@@ -21,4 +21,7 @@ default['jenkins_agent']['jenkins_agent_user'] = 'devops_vm_agent'
 default['jenkins_agent']['jenkins_server_user'] = 'devops_vm_admin'
 default['jenkins_ssh_slave']['remote_fs']= "/home/devops_vm_agent"
 
+default['jenkins_server']['secret_text_credentials_id']="azure_devops_pat"
+
+
 # For further information, see the Chef documentation (https://docs.chef.io/attributes).
