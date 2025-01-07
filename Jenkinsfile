@@ -14,7 +14,7 @@ pipeline {
         AZURE_DEVOPS_FEED = 'ecom_feed' // Azure Artifacts feed name
         AZURE_DEVOPS_PACKAGE= 'ecom'
         BUILD_VERSION = "${env.BUILD_NUMBER}"
-        ARTIFACTPATH = "${env.WORKSPACE}"
+        ARTIFACTPATH = "${env.WORKSPACE}/target/artifacts"
     }
     stages {
         stage("maven and react js versions used here"){
