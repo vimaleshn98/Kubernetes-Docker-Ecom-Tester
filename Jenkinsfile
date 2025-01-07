@@ -143,57 +143,118 @@ pipeline {
                 }
             }
         }
-        stage('Upload Artifact to Azure DevOps') {
-            agent {
-                docker {
-                    image 'bitnami/azure-cli:latest'
-                    args '--entrypoint=""  -u root'
+
+        stage('Parallel push artifacts eCommersApp project to azure artificate'){
+            parallel {
+                stage('Upload maven Artifact to Azure DevOps') {
+                    agent {
+                        docker {
+                            image 'bitnami/azure-cli:latest'
+                            args '--entrypoint=""  -u root'
+                        }
+                    }
+                    steps {
+                        script {
+                            def BUILD_NUMBER = "${env.BUILD_ID}"
+                            // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
+                            withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT')]) {    
+                                // Authenticate using Azure CLI                        
+                                sh '''
+                                    az extension add --name azure-devops
+
+                                    apt-get update
+
+                                    apt-get install libicu-dev -y
+                                    
+                                    # Log into Azure DevOps using the injected PAT
+                                    echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
+                                '''
+
+                                // Use Azure CLI to upload to Azure Artifacts
+                                // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+        
+
+                                sh '''
+                                    az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name javaecom --version "1.${BUILD_NUMBER}.0" --path "${SPRING_BOOT_APP_NAME}/target/"
+                                '''
+
+                                // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+
+
+                            }
+                        }
+                    }
+                    post{
+                            always{
+                                echo(message: 'maven build pushed to Artifacts')
+                            }
+                            success{
+                                echo(message: 'maven build pushed to Artifacts successfull')
+                            }
+                            unsuccessful{
+                                echo(message: 'maven build pushed to Artifacts unsuccessfull')
+                            }
+                        }
+                }
+                stage('Upload react Artifact to Azure DevOps') {
+                    agent {
+                        docker {
+                            image 'bitnami/azure-cli:latest'
+                            args '--entrypoint=""  -u root'
+                        }
+                    }
+                    steps {
+                        script {
+                            def BUILD_NUMBER = "${env.BUILD_ID}"
+                            // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
+                            withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT')]) {    
+                                // Authenticate using Azure CLI                        
+                                sh '''
+                                    az extension add --name azure-devops
+
+                                    apt-get update
+
+                                    apt-get install libicu-dev -y
+                                    
+                                    # Log into Azure DevOps using the injected PAT
+                                    echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
+                                '''
+
+                                // Use Azure CLI to upload to Azure Artifacts
+                                // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+        
+
+                                sh '''
+                                    az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name reactecom --version "1.${BUILD_NUMBER}.0" --path "${REACT_APP_NAME}/build/"
+                                '''
+
+                                // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+
+
+                            }
+                        }
+                    }
+                    post{
+                            always{
+                                echo(message: 'react build pushed to Artifacts')
+                            }
+                            success{
+                                echo(message: 'react build pushed to Artifacts successfull')
+                            }
+                            unsuccessful{
+                                echo(message: 'react build pushed to Artifacts unsuccessfull')
+                            }
+                        }
                 }
             }
-            steps {
-                script {
-                    def BUILD_NUMBER = "${env.BUILD_ID}"
-                    // Upload the artifact from Jenkins workspace to Azure DevOps Artifacts
-                    withCredentials([string(credentialsId: 'azure_devops_pat', variable: 'PAT')]) {    
-                        // Authenticate using Azure CLI                        
-                        sh '''
-                            az extension add --name azure-devops
-
-                            apt-get update
-
-                            apt-get install libicu-dev -y
-                            
-                            # Log into Azure DevOps using the injected PAT
-                            echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
-                        '''
-
-                        // Use Azure CLI to upload to Azure Artifacts
-                        // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
-  
-
-                        sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name javaEcom --version "1.${BUILD_NUMBER}.0" --path "${SPRING_BOOT_APP_NAME}/target/"
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name reactEcom --version "1.${BUILD_NUMBER}.0" --path "${REACT_APP_NAME}/build/"
-                        '''
-
-                        // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
-
-
-                    }
-                }
-            }
-            post{
-                    always{
-                        echo(message: 'maven build pushed to Artifacts')
-                    }
-                    success{
-                        echo(message: 'maven build pushed to Artifacts successfull')
-                    }
-                    unsuccessful{
-                        echo(message: 'maven build pushed to Artifacts unsuccessfull')
-                    }
-                }
         }
+        stage('Parallel Docker Build spring-boot-basic-microservice'){
+            parallel {
+
+            }
+        }
+
+
     }
 
 }
