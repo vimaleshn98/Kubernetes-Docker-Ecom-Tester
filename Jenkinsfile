@@ -13,8 +13,8 @@ pipeline {
         AZURE_DEVOPS_ORG = 'https://dev.azure.com/devops7349'  // Azure DevOps organization
         AZURE_DEVOPS_FEED = 'ecom_feed' // Azure Artifacts feed name
         AZURE_DEVOPS_PACKAGE= 'ecom'
-        BUILD_VERSION = "1.0.${env.BUILD_NUMBER}"  // Use BUILD_NUMBER for versioning
-        ARTIFACTPATH = "${env.WORKSPACE}/"  // Modify this path according to your project
+        BUILD_VERSION = "${env.BUILD_NUMBER}"
+        ARTIFACTPATH = "${env.WORKSPACE}"
     }
     stages {
         stage("maven and react js versions used here"){
@@ -167,22 +167,13 @@ pipeline {
                             # Log into Azure DevOps using the injected PAT
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
-                        sh '''
-                            echo $BUILD_VERSION
-                            echo $ARTIFACTPATH
-                        '''
-                        input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+                        // input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
+                        sh 'ls -la $ARTIFACTPATH'
                         // Use Azure CLI to upload to Azure Artifacts
                         sh '''
-                            az artifacts universal publish \
-                                --organization $AZURE_DEVOPS_ORG \
-                                --feed $AZURE_DEVOPS_FEED \
-                                --project=$AZURE_DEVOPS_PACKAGE \
-                                --scope project \
-                                --description "ecom app Packages" \
-                                --name ecom \
-                                --version $BUILD_VERSION \
-                                --path $ARTIFACTPATH
+                            echo "Workspace Path: $ARTIFACTPATH"
+
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project=$AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_VERSION --path $ARTIFACTPATH
                         '''
 
                     }
