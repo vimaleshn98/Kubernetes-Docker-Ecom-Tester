@@ -179,7 +179,7 @@ pipeline {
 
                         sh "echo ${env.WORKSPACE}"
 
-                        def BUILD_NUMBER = "${env.BUILD_ID}"
+                        def BUILD_NUMBER = "1.${env.BUILD_ID}.0"
                         def ARTIFICATE_PATH = "${env.WORKSPACE}"
 
                         sh '''
