@@ -1,8 +1,4 @@
 pipeline {
-    // agent{
-    //     label 'executor'
-    // }
-
     agent none
 
     environment {
@@ -172,8 +168,8 @@ pipeline {
                             echo $PAT | az devops login --organization $AZURE_DEVOPS_ORG
                         '''
                         sh '''
-                            echo $buildVersion
-                            echo $artifactFile
+                            echo $BUILD_VERSION
+                            echo $ARTIFACTPATH
                         '''
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
                         // Use Azure CLI to upload to Azure Artifacts
@@ -181,7 +177,7 @@ pipeline {
                             az artifacts universal publish \
                                 --organization $AZURE_DEVOPS_ORG \
                                 --feed $AZURE_DEVOPS_FEED \
-                                --package $AZURE_DEVOPS_PACKAGE \
+                                --project=$AZURE_DEVOPS_PACKAGE \
                                 --scope project \
                                 --description "ecom app Packages" \
                                 --name ecom \
