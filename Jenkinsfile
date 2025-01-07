@@ -15,7 +15,7 @@ pipeline {
         
 
         MAVEN_HOME = '/usr/share/maven'  // Set the Maven home path in the container       
-        AZURE_DEVOPS_ORG = 'https://dev.azure.com/devops7349'  // Azure DevOps organization
+        // AZURE_DEVOPS_ORG = 'https://dev.azure.com/devops77323'  // Azure DevOps organization 
         AZURE_DEVOPS_FEED = 'ecom_feed' // Azure Artifacts feed name
         AZURE_DEVOPS_PACKAGE= 'ecom'
     }
