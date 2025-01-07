@@ -156,7 +156,9 @@ pipeline {
             }
             when {
                 // This stage will run only if the previous stages (Build, Test) succeed.
-                expression { currentBuild.result == 'SUCCESS' }
+                expression { 
+                    return currentBuild.result == 'SUCCESS'
+                }
             }
             steps {
                 script {
