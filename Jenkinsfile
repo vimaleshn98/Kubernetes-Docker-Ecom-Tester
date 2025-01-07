@@ -192,7 +192,7 @@ pipeline {
   
 
                         sh '''
-                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_NUMBER --path "${env.WORKSPACE}"
+                            az artifacts universal publish --organization $AZURE_DEVOPS_ORG --feed $AZURE_DEVOPS_FEED --project $AZURE_DEVOPS_PACKAGE --scope project --description "ecom app Packages" --name ecom --version $BUILD_NUMBER --path "${SPRING_BOOT_APP_NAME}/target/*.jar"
                         '''
 
                         input message: 'Approve deployment?', parameters: [string(defaultValue: 'default', description: 'Enter value', name: 'example')]
